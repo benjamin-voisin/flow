@@ -28,6 +28,7 @@ pub struct Flow {
     pub seat: Option<Seat>,
     pub outputs: Vec<Output>,
     pub control: Option<ZriverControlV1>,
+    pub focused_view: Option<String>,
 }
 
 impl Flow {
@@ -37,6 +38,7 @@ impl Flow {
             seat: None,
             outputs: vec![],
             control: None,
+            focused_view: None,
         }
     }
 
@@ -184,10 +186,13 @@ impl Dispatch<ZriverSeatStatusV1, ()> for Flow {
         _: &Connection,
         _: &QueueHandle<Self>,
     ) {
-        if let zriver_seat_status_v1::Event::FocusedOutput { output } = event {
+        if let zriver_seat_status_v1::Event::FocusedOutput { ref output } = event {
             if let Some(output) = state.get_output(&output.id()) {
                 output.focused = true;
             }
+        }
+        if let zriver_seat_status_v1::Event::FocusedView { title } = event {
+            state.focused_view = Some(title);
         }
     }
 }
