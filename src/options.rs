@@ -55,10 +55,10 @@ pub fn parse_args() -> Result<Arguments, Box<dyn std::error::Error>> {
             to_tags: pargs.free_from_str()?,
         }),
         Some("scratchpad") => Ok(Arguments::Scratchpad {
+            replace: pargs.contains(["-r", "--replace"]),
             to_tags: pargs.free_from_str()?,
             focus_view: pargs.free_from_str()?,
             layout_command: pargs.opt_free_from_str()?,
-            replace: !pargs.contains(["-r", "--replace"]),
         }),
         Some(_) => Err("Unknown subcommand".into()),
         None => Ok(Arguments::Global {
