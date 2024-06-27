@@ -1,5 +1,6 @@
 use crate::client::Flow;
 use crate::options::{parse_args, Arguments};
+use crate::scratchpad::Scratchpad;
 use std::error::Error;
 use wayland_client::{Connection, Proxy};
 
@@ -8,6 +9,7 @@ mod options;
 mod output;
 mod protocols;
 mod seat;
+mod scratchpad;
 
 static ROUNDTRIP_EXPECT: &str = "All requests in queue must be sent and handled before proceeding.";
 
@@ -132,6 +134,8 @@ fn main() {
             layout_command,
             replace,
         }) => {
+            let mut scratchpad = Scratchpad::new(to_tags, focus_view, layout_command, replace);
+            scratchpad.summon(&mut flow, queue_handle, &mut event_queue);
         }
         _ => (),
     }
