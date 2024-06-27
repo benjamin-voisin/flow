@@ -30,6 +30,12 @@ pub enum Arguments {
     FocusSetViewTags {
         to_tags: u32,
     },
+    Scratchpad {
+        to_tags: u32,
+        focus_view: String,
+        layout_command: Option<String>,
+        replace: bool,
+    },
 }
 
 pub fn parse_args() -> Result<Arguments, Box<dyn std::error::Error>> {
@@ -47,6 +53,12 @@ pub fn parse_args() -> Result<Arguments, Box<dyn std::error::Error>> {
         Some("focus-urgent-tags") => Ok(Arguments::FocusUrgentTags),
         Some("focus-set-view-tags") => Ok(Arguments::FocusSetViewTags {
             to_tags: pargs.free_from_str()?,
+        }),
+        Some("scratchpad") => Ok(Arguments::Scratchpad {
+            to_tags: pargs.free_from_str()?,
+            focus_view: pargs.free_from_str()?,
+            layout_command: pargs.opt_free_from_str()?,
+            replace: !pargs.contains(["-r", "--replace"]),
         }),
         Some(_) => Err("Unknown subcommand".into()),
         None => Ok(Arguments::Global {

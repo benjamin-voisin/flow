@@ -24,6 +24,7 @@ fn main() {
             Arguments::ToggleTags { .. } => Ok(args),
             Arguments::FocusUrgentTags => Ok(args),
             Arguments::FocusSetViewTags { .. } => Ok(args),
+            Arguments::Scratchpad { .. } => Ok(args),
         },
         Err(error) => {
             eprintln!("Error: {}", error);
@@ -124,6 +125,13 @@ fn main() {
                 vec![String::from("set-focused-tags"), to_tags.to_string()],
                 &queue_handle,
             );
+        }
+        Ok(Arguments::Scratchpad  {
+            to_tags,
+            focus_view,
+            layout_command,
+            replace,
+        }) => {
         }
         _ => (),
     }
