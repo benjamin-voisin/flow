@@ -31,6 +31,17 @@ impl Scratchpad {
             queue_handle,
         );
     }
+    fn send_layout_command(&mut self, flow: &mut Flow, queue_handle: &QueueHandle<Flow>) {
+        match &self.layout_command {
+            Some(command) => {
+                flow.send_command(
+                    vec!["send-layout-command".into(), "rivertile".into(), command.into()],
+                    queue_handle,
+                );
+            }
+            None => ()
+        }
+    }
     fn focus_desired_view(&mut self, flow: &mut Flow, queue_handle: &QueueHandle<Flow>, event_queue: &mut EventQueue<Flow>) {
         let re = Regex::new(&regex::escape(&self.focus_view)).unwrap();
         while !re.is_match(&flow.focused_view.clone().unwrap()) {
@@ -49,5 +60,6 @@ impl Scratchpad {
             self.toggle_tags(flow, &queue_handle);
             self.focus_desired_view(flow, &queue_handle, event_queue);
         }
+        self.send_layout_command(flow, &queue_handle);
     }
 }
